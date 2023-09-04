@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-export async function middleware(request: NextRequest) {
+export function middleware(request: NextRequest) {
   if (request.nextUrl.pathname == "/ServerError") return NextResponse.next();
   if (
     request.cookies.get("jwt_token")?.value &&
@@ -20,7 +21,16 @@ export async function middleware(request: NextRequest) {
   return NextResponse.redirect(new URL("/userlogin", request.url));
 }
 
+// See "Matching Paths" below to learn more
 export const config = {
-  // matcher: ["/!userlogin","/!cprofile","/!dashboard", "/!signup", "/!resetpassword", "/!companyregister","/!"]
-  matcher: ["/((?!userlogin|signup|resetpassword|companyregister|api|_next|favicon.ico|.*\\..*))"],
+  matcher: [
+    "/dashboard",
+    "/cprofile",
+    "/",
+    "/!userlogin",
+    "/!signup",
+    "/!resetpassword",
+    "/!companyregister",
+    "/!api",
+  ],
 };
