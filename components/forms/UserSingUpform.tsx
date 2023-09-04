@@ -21,10 +21,12 @@ import { Checkbox } from "@nextui-org/react";
 import Link from "next/link";
 import { createCompany } from "@/app/action/login";
 import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 const UserSingupform = () => {
   const { toast } = useToast();
   const router = useRouter();
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const form = useForm({
     resolver: zodResolver(UserSingupformSchema),
@@ -40,13 +42,12 @@ const UserSingupform = () => {
   });
 
   const onSubmit = async (value: z.infer<typeof UserSingupformSchema>) => {
-    console.log(value);
+    setIsLoading(true);
     const data = await createCompany({ value });
-    console.log(data);
     if (data.status === "fail" || data.status === "404") {
       toast({
         title: data.message,
-        duration: 1000,
+        duration: 2000,
       });
     } else {
       form.reset();
@@ -54,8 +55,9 @@ const UserSingupform = () => {
         title: "Successfully Create Company",
         duration: 1000,
       });
+      router.push("/");
     }
-    router.push("/");
+    setIsLoading(false);
   };
 
   return (
@@ -75,6 +77,7 @@ const UserSingupform = () => {
                 </FormLabel>
                 <FormControl>
                   <Input
+                    disabled={isLoading}
                     type="email"
                     placeholder="Please enter your email address"
                     {...field}
@@ -95,6 +98,7 @@ const UserSingupform = () => {
                 </FormLabel>
                 <FormControl>
                   <Input
+                    disabled={isLoading}
                     type="text"
                     placeholder="Please enter your username"
                     {...field}
@@ -115,6 +119,7 @@ const UserSingupform = () => {
                 </FormLabel>
                 <FormControl>
                   <Input
+                    disabled={isLoading}
                     type="text"
                     placeholder="Please enter your username"
                     {...field}
@@ -135,6 +140,7 @@ const UserSingupform = () => {
                 </FormLabel>
                 <FormControl>
                   <Input
+                    disabled={isLoading}
                     type="password"
                     placeholder="Please enter your password"
                     {...field}
@@ -155,6 +161,7 @@ const UserSingupform = () => {
                 </FormLabel>
                 <FormControl>
                   <Input
+                    disabled={isLoading}
                     type="url"
                     placeholder="Please enter your website url"
                     {...field}
@@ -175,6 +182,7 @@ const UserSingupform = () => {
                 </FormLabel>
                 <FormControl>
                   <Input
+                    disabled={isLoading}
                     placeholder="Contact number"
                     type="number"
                     {...field}
@@ -210,8 +218,10 @@ const UserSingupform = () => {
         <div className="flex flex-col gap-2">
           <Button
             type="submit"
+            disabled={isLoading}
             className="w-full !mt-5 bg-[#6390D4] hover:bg-primary-600"
           >
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Sign Up
           </Button>
           <div className="flex items-center justify-center">

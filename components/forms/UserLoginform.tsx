@@ -22,9 +22,11 @@ import { Login } from "@/app/action/login";
 import { Checkbox } from "@nextui-org/react";
 import { Label } from "../ui/label";
 import Link from "next/link";
+import { Loader2 } from "lucide-react";
 
 const UserLoginform = () => {
   const { toast } = useToast();
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const form = useForm({
     resolver: zodResolver(UserLoginformSchema),
@@ -35,12 +37,13 @@ const UserLoginform = () => {
   });
 
   const onSubmit = async (value: z.infer<typeof UserLoginformSchema>) => {
+    setIsLoading(true);
     const data = await Login(value);
 
     if (data.status === "fail") {
       toast({
         title: data.message,
-        duration: 1000,
+        duration: 2000,
       });
     } else {
       toast({
@@ -48,6 +51,7 @@ const UserLoginform = () => {
         duration: 1000,
       });
     }
+    setIsLoading(false);
   };
 
   return (
@@ -67,6 +71,7 @@ const UserLoginform = () => {
                 </FormLabel>
                 <FormControl>
                   <Input
+                    disabled={isLoading}
                     type="email"
                     placeholder="Please enter your email address"
                     {...field}
@@ -87,6 +92,7 @@ const UserLoginform = () => {
                 </FormLabel>
                 <FormControl>
                   <Input
+                    disabled={isLoading}
                     type="password"
                     placeholder="Please enter your password"
                     {...field}
@@ -101,7 +107,7 @@ const UserLoginform = () => {
             <div className=" flex gap-2 items-center">
               <Checkbox id="me" className="p-0">
                 Remember me
-                </Checkbox>
+              </Checkbox>
             </div>
             <div>
               <Link href="/resetpassword" className="text-[#4F5FF6]">
@@ -112,7 +118,12 @@ const UserLoginform = () => {
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <Button type="submit" className="w-full !mt-5 bg-[#6390D4] hover:bg-primary-600">
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="w-full !mt-5 bg-[#6390D4] hover:bg-primary-600"
+          >
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Sign In
           </Button>
           <div className="flex items-center justify-center">
